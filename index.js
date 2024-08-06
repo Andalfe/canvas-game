@@ -12,6 +12,7 @@ class Player {
   constructor(x, y, radius, color) {
     this.x = x;
     this.y = y;
+    this.baseRadius = radius; // Store the base radius
     this.radius = radius;
     this.color = color;
     this.targetX = x;
@@ -45,6 +46,7 @@ class Player {
     }
 
     this.boundPosition();
+    this.updateRadius();
   }
 
   boundPosition() {
@@ -66,6 +68,15 @@ class Player {
     if (this.y < leftBoundY) this.y = leftBoundY;
     if (this.y < rightBoundY) this.y = rightBoundY;
     if (this.y < topLeft.y) this.y = topLeft.y;
+  }
+
+  updateRadius() {
+    // Adjust the radius based on the player's y position
+    const topY = innerHeight + height_perspective;
+    const bottomY = innerHeight;
+    const scaleFactor = 0.4; // The factor by which the size decreases as it moves up
+
+    this.radius = this.baseRadius * (1 - scaleFactor * ((this.y - topY) / (bottomY - topY)));
   }
 }
 
@@ -120,7 +131,7 @@ class blankRoom {
 }
 
 const room = new blankRoom();
-const player = new Player(500, 900, 15, "red");
+const player = new Player(500, 900, 30, "red");
 
 function getCursorPosition(canvas, event) {
   const rect = canvas.getBoundingClientRect();
